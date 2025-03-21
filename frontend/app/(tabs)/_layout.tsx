@@ -1,10 +1,8 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons"; // Import FontAwesome
 
-import { HapticTab } from "@/components/HapticTab";
-import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -16,11 +14,10 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: styles.tabBarStyle,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIconStyle: styles.iconStyle,
+        tabBarBackground: () => <View style={styles.tabBarBackground} />, // Custom background
       }}
     >
       {/* Home Tab */}
@@ -28,8 +25,8 @@ export default function TabLayout() {
         name="home"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="home" size={size ?? 24} color={color} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="home" size={22} color={color} />
           ),
         }}
       />
@@ -39,8 +36,8 @@ export default function TabLayout() {
         name="workout"
         options={{
           title: "Workout",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="dumbbell" size={size ?? 24} color={color} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="dumbbell" size={22} color={color} />
           ),
         }}
       />
@@ -50,8 +47,8 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="cog" size={size ?? 24} color={color} />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="cog" size={22} color={color} />
           ),
         }}
       />
@@ -60,19 +57,30 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarStyle: {
+  tabBarBackground: {
     position: "absolute",
-    bottom: Platform.OS === "ios" ? 20 : 15,
+    bottom: 10,
     left: 20,
     right: 20,
     height: 65,
-    borderRadius: 30,
     backgroundColor: "#ffffff",
-    elevation: 8,
+    borderRadius: 25,
+    elevation: 5,
     shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
+  },
+  tabBarStyle: {
+    position: "absolute",
+    bottom: 10,
+    left: 20,
+    right: 20,
+    height: 65,
+    borderRadius: 25,
+    backgroundColor: "transparent", // Blends with the custom background
+    elevation: 0,
+    shadowColor: "transparent",
     paddingBottom: Platform.OS === "ios" ? 20 : 10,
   },
   tabBarLabel: {
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   iconStyle: {
-    width: 30,
-    height: 30,
+    width: 28,
+    height: 28,
   },
 });
