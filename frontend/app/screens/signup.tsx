@@ -27,12 +27,12 @@ export default function SignupScreen() {
         <FontAwesome5 name={confirmPasswordVisible ? "eye" : "eye-slash"} size={20} color="#666" onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)} />
       </View>
 
-      {/* ✅ Sign Up navigates to Fitness Goals */}
+      {/* Sign Up navigates to Fitness Goals */}
       <TouchableOpacity style={styles.button} onPress={() => router.push("./fitnessgoals")}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      {/* ✅ Login navigates to Login Screen */}
+      {/* Login navigates to Login Screen */}
       <TouchableOpacity onPress={() => router.push("./login")}>
         <Text style={styles.linkText}>Already have an account? Login</Text>
       </TouchableOpacity>
@@ -40,7 +40,7 @@ export default function SignupScreen() {
   );
 }
 
-// ✅ Add Missing Styles
+// Styles
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F5F5F5", paddingHorizontal: 20 },
   title: { fontSize: 32, fontWeight: "bold", color: "#1E3050" },

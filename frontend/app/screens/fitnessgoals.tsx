@@ -54,7 +54,7 @@ export default function FitnessGoalsScreen() {
           ))}
         </RadioButton.Group>
 
-        {/* ✅ Save Goals navigates to Home */}
+        {/* Save Goals navigates to Home */}
         <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
           <Text style={styles.buttonText}>Save Goals</Text>
         </TouchableOpacity>
@@ -63,7 +63,7 @@ export default function FitnessGoalsScreen() {
   );
 }
 
-// ✅ Styles
+// Styles
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1 },
   container: { flex: 1, padding: 20, backgroundColor: "#F5F5F5" },

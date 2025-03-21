@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons"; // Import FontAwesome
+import { FontAwesome5 } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -17,7 +17,7 @@ export default function TabLayout() {
         tabBarStyle: styles.tabBarStyle,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIconStyle: styles.iconStyle,
-        tabBarBackground: () => <View style={styles.tabBarBackground} />, // Custom background
+        tabBarBackground: () => <View style={styles.tabBarBackground} />, 
       }}
     >
       {/* Home Tab */}

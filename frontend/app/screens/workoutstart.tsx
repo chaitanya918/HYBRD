@@ -66,7 +66,7 @@ export default function WorkoutStartScreen() {
   );
 }
 
-// ✅ Styles
+// Styles
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1 },
   container: { flex: 1, padding: 20, backgroundColor: "#F5F5F5" },

@@ -87,7 +87,7 @@ export default function HomeScreen() {
   );
 }
 
-// ✅ **Styles**
+// Styles
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

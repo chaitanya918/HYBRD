@@ -19,12 +19,12 @@ export default function LoginScreen() {
         <FontAwesome5 name={passwordVisible ? "eye" : "eye-slash"} size={20} color="#666" onPress={() => setPasswordVisible(!passwordVisible)} />
       </View>
 
-      {/* ✅ Login navigates to Home */}
+      {/* Login navigates to Home */}
       <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* ✅ Create One navigates to Signup */}
+      {/* Create One navigates to Signup */}
       <TouchableOpacity onPress={() => router.push("./signup")}>
         <Text style={styles.linkText}>Don't have an account? Create One</Text>
       </TouchableOpacity>
