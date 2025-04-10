@@ -1,27 +1,78 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { RadioButton } from "react-native-paper";
 
 export default function FitnessGoalsScreen() {
   const router = useRouter();
+  const { email } = useLocalSearchParams();
+
   const [gender, setGender] = useState("male");
   const [goal, setGoal] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
   const [trainingFrequency, setTrainingFrequency] = useState("");
+  const [age, setAge] = useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+
+  const validateForm = () => {
+    return (
+      email &&
+      age && !isNaN(parseInt(age)) &&
+      weight && !isNaN(parseFloat(weight)) &&
+      height && !isNaN(parseFloat(height)) &&
+      gender &&
+      goal &&
+      activityLevel &&
+      trainingFrequency
+    );
+  };
+
+  const handleSaveGoals = async () => {
+    if (!validateForm()) {
+      Alert.alert("Incomplete Form", "Please fill out all fields before continuing.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/details/save-goals/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          age: parseInt(age),
+          weight: parseFloat(weight),
+          height: parseFloat(height),
+          gender,
+          goal,
+          activity_level: activityLevel,
+          training_frequency: trainingFrequency,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Alert.alert("Success", "Your fitness goals have been saved.");
+        router.push("./login");
+      } else {
+        Alert.alert("Error", JSON.stringify(data));
+      }
+    } catch (err) {
+      Alert.alert("Error", "Could not connect to the server.");
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Fitness Goals</Text>
 
-        {/* Basic Information */}
         <Text style={styles.label}>Basic Information</Text>
-        <TextInput style={styles.input} placeholder="Enter Your Age" keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Enter Your Weight (kg/lbs)" keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Enter Your Height (cm/in)" keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Enter Your Age" keyboardType="numeric" onChangeText={setAge} />
+        <TextInput style={styles.input} placeholder="Enter Your Weight (lbs)" keyboardType="numeric" onChangeText={setWeight} />
+        <TextInput style={styles.input} placeholder="Enter Your Height (cm)" keyboardType="numeric" onChangeText={setHeight} />
 
-        {/* Gender Selection */}
         <Text style={styles.label}>Gender</Text>
         <RadioButton.Group onValueChange={setGender} value={gender}>
           <View style={styles.radioGroup}>
@@ -30,7 +81,6 @@ export default function FitnessGoalsScreen() {
           </View>
         </RadioButton.Group>
 
-        {/* Fitness Goals */}
         <Text style={styles.label}>Your Goals</Text>
         <RadioButton.Group onValueChange={setGoal} value={goal}>
           {["Build Muscle", "Lose Weight", "Get Stronger", "Improve Endurance", "Stay Fit"].map((item) => (
@@ -38,7 +88,6 @@ export default function FitnessGoalsScreen() {
           ))}
         </RadioButton.Group>
 
-        {/* Activity Level */}
         <Text style={styles.label}>Activity Level</Text>
         <RadioButton.Group onValueChange={setActivityLevel} value={activityLevel}>
           {["Beginner", "Intermediate", "Advanced"].map((item) => (
@@ -46,7 +95,6 @@ export default function FitnessGoalsScreen() {
           ))}
         </RadioButton.Group>
 
-        {/* Training Frequency */}
         <Text style={styles.label}>Training Frequency</Text>
         <RadioButton.Group onValueChange={setTrainingFrequency} value={trainingFrequency}>
           {["1 - 3 days", "4 - 7 days", "7+ days"].map((item) => (
@@ -54,8 +102,7 @@ export default function FitnessGoalsScreen() {
           ))}
         </RadioButton.Group>
 
-        {/* Save Goals navigates to Home */}
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
+        <TouchableOpacity style={styles.button} onPress={handleSaveGoals}>
           <Text style={styles.buttonText}>Save Goals</Text>
         </TouchableOpacity>
       </View>
@@ -63,7 +110,6 @@ export default function FitnessGoalsScreen() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1 },
   container: { flex: 1, padding: 20, backgroundColor: "#F5F5F5" },
@@ -74,4 +120,3 @@ const styles = StyleSheet.create({
   button: { backgroundColor: "#007BFF", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 20 },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
 });
-

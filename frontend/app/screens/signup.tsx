@@ -1,12 +1,59 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 export default function SignupScreen() {
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const API_BASE_URL = "http://127.0.0.1:8000/api/users"; // Change to local IP for physical device testing
+
+  const handleSignup = async () => {
+    if (password !== confirm) {
+      Alert.alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/signup/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Alert.alert("You are almost there", "Please fill out your fitness goals.");
+        router.push({
+          pathname: "/screens/fitnessgoals",
+          params: {
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            password,
+          },
+        });
+      } else {
+        const errorText = typeof data === 'object' ? JSON.stringify(data) : String(data);
+        Alert.alert("Signup failed", errorText);
+      }
+    } catch (err) {
+      Alert.alert("Error", "Could not connect to server.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -14,25 +61,24 @@ export default function SignupScreen() {
       <Text style={styles.subtitle}>Fitness Workout App</Text>
       <Text style={styles.heading}>Create Account</Text>
 
-      <TextInput style={styles.input} placeholder="Enter your name" />
-      <TextInput style={styles.input} placeholder="Enter your email" keyboardType="email-address" />
+      <TextInput style={styles.input} placeholder="First Name" onChangeText={setFirstName} />
+      <TextInput style={styles.input} placeholder="Last Name" onChangeText={setLastName} />
+      <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" onChangeText={setEmail} />
 
       <View style={styles.passwordContainer}>
-        <TextInput style={styles.passwordInput} placeholder="Enter your password" secureTextEntry={!passwordVisible} />
+        <TextInput style={styles.passwordInput} placeholder="Enter your password" secureTextEntry={!passwordVisible} onChangeText={setPassword} />
         <FontAwesome5 name={passwordVisible ? "eye" : "eye-slash"} size={20} color="#666" onPress={() => setPasswordVisible(!passwordVisible)} />
       </View>
 
       <View style={styles.passwordContainer}>
-        <TextInput style={styles.passwordInput} placeholder="Confirm your password" secureTextEntry={!confirmPasswordVisible} />
+        <TextInput style={styles.passwordInput} placeholder="Confirm your password" secureTextEntry={!confirmPasswordVisible} onChangeText={setConfirm} />
         <FontAwesome5 name={confirmPasswordVisible ? "eye" : "eye-slash"} size={20} color="#666" onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)} />
       </View>
 
-      {/* Sign Up navigates to Fitness Goals */}
-      <TouchableOpacity style={styles.button} onPress={() => router.push("./fitnessgoals")}>
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      {/* Login navigates to Login Screen */}
       <TouchableOpacity onPress={() => router.push("./login")}>
         <Text style={styles.linkText}>Already have an account? Login</Text>
       </TouchableOpacity>
@@ -40,7 +86,6 @@ export default function SignupScreen() {
   );
 }
 
-// Styles
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F5F5F5", paddingHorizontal: 20 },
   title: { fontSize: 32, fontWeight: "bold", color: "#1E3050" },
